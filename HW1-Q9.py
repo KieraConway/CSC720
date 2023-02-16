@@ -1,5 +1,4 @@
 from __future__ import print_function
-
 '''
 
 Script Purpose: Homework One - Implement an FA
@@ -9,31 +8,58 @@ Script Author:  Kiera Conway, Student - Dakota State University
 '''
 
 ''' Script Module Importing '''
+
 # Python Standard Libaries
 import sys              # import Python Standard Sys Library
 import string           # Special string Module
 import getopt
+
+# Python 3rd Party Libraries
 from prettytable import PrettyTable
 
+''' End of Script Module Importing '''
+
+''' Constant Initializing '''
+# Script Constants
+SCRIPT_ASSIGNMENT = "Homework One"
+SCRIPT_TITLE = "Implement an FA"
+SCRIPT_VERSION = "Version: 1.0"
+SCRIPT_AUTHOR = "Author: Kiera Conway"
+
+''' End Constant Initialization '''
+
+''' Global Initializing '''
 # State Settings
-states = []
-current_state = 0  # Starts at state 0
-test_Input = []
+states = []                             # list of State class
+current_state = 0                       # starts at state 0
+test_Input = []                         # list of test input strings
 
 # Alphabet Sets
-transition_Alpha_Num = string.ascii_lowercase + string.digits  # transition used for domains
-transition_Ampersand = '@'  # transition for '@'
-transition_Period = '.'     # transition for '.'
+transition_Alpha_Num = string.ascii_lowercase\
+                       + string.digits  # transition used for domains
+transition_Ampersand = '@'              # transition for '@'
+transition_Period = '.'                 # transition for '.'
 
-# Alphabet Sets
-verbose = False              # verbose
+# Flags
+verbose = False                         # verbose flag
+valid_input = True                      # input validation flag
+
+''' End Global Initialization '''
 
 ''' Script Functions '''
 
+def usage():
+    # print("-h help"
+    #       "-v verbose")
+    print("\nA regex-free DFA simulation for email addresses\n "
+          "ver 1.0, 2023\n "
+          "Usage: dfa.py -h -v\n\n"
+          "-h: \t Display Usage summary \t|   Example: dfa.py -h\n"
+          "-v: \t Set Verbose Mode \t\t|   Example: dfa.py -v\t|   Default:", "True" if verbose else "False", "\n\n")
 
-def print_help():
-    print("-h help"
-          "-v verbose")
+
+
+
 
 def init_states():
     # Create States
@@ -129,6 +155,7 @@ class State:
 
 if __name__ == '__main__':
 
+    usage()
 
     accept_tbl = PrettyTable(['Input', 'Result'])
 
@@ -165,7 +192,7 @@ if __name__ == '__main__':
     if verbose:
         print("Testing Input...")
 
-    valid_input = True                                  # Flag for input validation
+
     for each_String in test_Input:                      # Iterate through Test Strings
 
         prev_state = -1                                 # to track previous state
@@ -215,10 +242,11 @@ if __name__ == '__main__':
         else:
             input_Accepted = False
 
+        accept_verdict = "Input Accepted" if input_Accepted else "Input Rejected"
+
         if verbose:
 
             # Set Acceptance Variables
-            accept_verdict = "Input Accepted" if input_Accepted else "Input Rejected"
             accept_string = each_String + ": " + accept_verdict
 
             # Print Table
