@@ -1,7 +1,7 @@
 from __future__ import print_function
 '''
 
-Script Purpose: Homework One - Implement an FA
+Script Purpose: Homework One - Implement a DFA
 Script Version: 1.0 February 10, 2023
 Script Author:  Kiera Conway, Student - Dakota State University
 
@@ -22,7 +22,7 @@ from prettytable import PrettyTable
 ''' Constant Initializing '''
 # Script Constants
 SCRIPT_ASSIGNMENT = "Homework One"
-SCRIPT_TITLE = "Implement an FA"
+SCRIPT_TITLE = "Implement a DFA"
 SCRIPT_VERSION = "Version: 1.0"
 SCRIPT_AUTHOR = "Author: Kiera Conway"
 
@@ -48,29 +48,28 @@ valid_input = True                      # input validation flag
 
 ''' Script Functions '''
 
+
 def usage():
-    # print("-h help"
-    #       "-v verbose")
+    print_line(95)
     print("\nA regex-free DFA simulation for email addresses\n "
           "ver 1.0, 2023\n "
-          "Usage: dfa.py -h -v\n\n"
-          "-h: \t Display Usage summary \t|   Example: dfa.py -h\n"
-          "-v: \t Set Verbose Mode \t\t|   Example: dfa.py -v\t|   Default:", "True" if verbose else "False", "\n\n")
-
-
-
+          "Usage: python 3 dfa_sim.py -h -v\n\n"
+          "-h  |  --help \t Display Usage summary \t|   Example: python 3 dfa_sim.py -h\n"
+          "-v  |  --verbose \t Set Verbose Mode \t|   Example: python 3 dfa_sim.py -v\t|   Default:", "True" if verbose else "False")
+    print_line(95)
 
 
 def init_states():
     # Create States
     if verbose:
-        print("Initializing States...")
+        print("Initializing States...\n")
     for i in range(0, 13):
-        states.append(State(i))
+        states.append(State(i))         # initialize empty States
 
     # Set State Values
     if verbose:
         print("Setting State Properties...\n")
+
     states[0].set_properties(**{transition_Alpha_Num: 1})       # q0
 
     states[1].set_properties(**{transition_Alpha_Num: 1},
@@ -107,6 +106,12 @@ def init_states():
     states[12].set_properties(True)                             # q12
 
 
+def print_line(length):
+    print()
+    for i in range(0, length):
+        print("-", end='')              # Print Separator
+    print("\n")
+
 ''' End of Script Functions '''
 
 
@@ -115,27 +120,20 @@ def init_states():
 
 class State:
     def __init__(self, number):
-        self.number = number
-        self.transitions = {}
-        self.accept = False
+        self.number = number        # state number (q0 = 0, q1 = 1, etc)
+        self.transitions = {}       # will hold state transitions
+        self.accept = False         # whether state is an acceptance state
 
-    def add_transition(self, input_condition, new_state):
-        self.transitions[input_condition] = new_state
-
-    def print(self):
+    def print(self):                                        # prints state information
         print('q' + str(self.number) + ' Transitions:')
         for key, value in self.transitions.items():
             print('{', key, '} : ', value)
         print('Accept State = ', self.accept)
         print('\n')
 
-    '''
-    '
-    'transition_condition = {Condition: New State}
-    '
-    '''
-
-    def set_properties(self, accept_state=False, **transition_condition):
+    def set_properties(self,
+                       accept_state=False,
+                       **transition_condition):             # Update State Properties
 
         # Set Acceptance State
         self.accept = accept_state
@@ -148,71 +146,73 @@ class State:
                 print(f'Error: Invalid Transition Condition for State {self.number} <{err}>')
                 quit()
 
-
 ''' End of Script Classes '''
+
 
 ''' Main Script Starts Here '''
 
 if __name__ == '__main__':
 
-    usage()
+    # Print Basic Script Information
+    print()
+    print(SCRIPT_ASSIGNMENT)
+    print(SCRIPT_TITLE)
+    print(SCRIPT_VERSION)
+    print(SCRIPT_AUTHOR)
+    print_line(25)
 
+    # Create Acceptance table object and define headings
     accept_tbl = PrettyTable(['Input', 'Result'])
 
     # Parse User Input
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "vt:", ["verbose =", "test ="])
+        opts, args = getopt.getopt(sys.argv[1:], "vh", ["verbose", "help"])
 
         #len(sys.argv) sys.argv[1:]
         for opt, arg in opts:
             if opt in ['-v', '--verbose']:
                 verbose = True
-            # if opt in ['-t', '--test']:
-            #     test_Input = arg
+            elif opt in ['-h', '--help']:
+                usage()
+                exit()
 
     except Exception as err:
-        print(f'Invalid Input: {err}\n Restoring Default Settings ...')
+        print(f'Invalid Input: {err}\n Restoring Default Settings ...\n\n')
 
     # Initialize States
     init_states()
 
     # Configure Test Input
-    test_Input = ["abc@dsu.edu", "abc@pluto.dsu.edu", "11@123.com", "a.b.ab", "ab@ab", "ab@ab.abcd"]
-    # if len(test_Input) == 0:
-    #     test_Input = ["abc@dsu.edu", "abc@pluto.dsu.edu", "11@123.com", "a.b.ab", "ab@ab", "ab@ab.abcd"]
+    test_Input = ["abc@dsu.edu", "abc@pluto.dsu.edu",
+                  "11@123.com", "a.b.ab", "ab@ab",
+                  "ab@ab.abcd", "inval@!"]
 
-
-    ####
-    #     compare letter to current states transition
-    #     save new current current_state
-    #     loop
-    # if current state is accept state
-    #   string passes
-    ####
     if verbose:
         print("Testing Input...")
 
-
-    for each_String in test_Input:                      # Iterate through Test Strings
+    for each_String in test_Input:                      # iterate through test strings
 
         prev_state = -1                                 # to track previous state
 
-        # Create a tbl object and define headings
+        # Create state table object and define headings
         state_tbl = PrettyTable(['Start State', 'Condition', 'End State'])
 
         for each_Letter in each_String:                 # Iterate through characters
 
             prev_state = current_state                  # save current state
-            try:                                        # move states
-                current_state = int([val for key, val in states[current_state].transitions.items() if each_Letter in key][0])
+            try:                                        # move states if transition cond met
+                current_state = int([val for key, val
+                                     in states[current_state].transitions.items()
+                                     if each_Letter in key][0])
 
-            except:                                     # if state is invalid
-                valid_input = False                     # Flag invalid input
+            except:                                     # if transition condition no met
+                valid_input = False                     # flag invalid input
                 current_state = '( X )'
-                break                                   # Exit loop
+                break                                   # exit loop
                 # print('( X )')
 
             if verbose:
+                # Initialize Variables for State Table
                 start_s = ''
                 cond = '----- ' + each_Letter + ' ----->'
                 end_s = ''
@@ -238,10 +238,11 @@ if __name__ == '__main__':
 
         # Check Input Validity Flag
         if valid_input:
-            input_Accepted = states[current_state].accept
+            input_Accepted = states[current_state].accept   # copy current state's accept state
         else:
-            input_Accepted = False
+            input_Accepted = False                          # set false acceptance if invalid input
 
+        #  Consolidate acceptance into string
         accept_verdict = "Input Accepted" if input_Accepted else "Input Rejected"
 
         if verbose:
@@ -255,26 +256,23 @@ if __name__ == '__main__':
             print(result)
             print()
 
-            # Print Acceptance
-            # print(each_String, ": ", end='')
-            # print({True: "Input Accepted", False: "Input Rejected"}[input_Accepted])
-            # print()
-
-        # Add information to Accept Table
+        # Add String and Verdict to Acceptance Table
         accept_tbl.add_row([each_String,  accept_verdict])
 
-        current_state = 0  # restart DFA
+        # Restart DFA for next String
+        current_state = 0
 
     if verbose:
         print("Compiling Final States...\n")
 
-    # Print Table
+    # Print Acceptance Table
     accept_tbl.vrules = 0
     accept_tbl.hrules = 1
     result = accept_tbl.get_string()
     print(result)
     print()
 
+    # Complete Script
     print("\n\nScript End")
 
 ''' End of Main Script '''
