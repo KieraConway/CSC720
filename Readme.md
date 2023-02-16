@@ -13,7 +13,7 @@
 ## Usage
 ### Execution
 ```
- python3 HW1-Q9.py
+ python3 dfa_sim.py
 ```
 ### Arguments
 <i> all arguments are optional </i>
@@ -28,8 +28,8 @@
 
 Examples:
 ```
- python3 HW1-Q9.py --help
- python3 HW1-Q9.py -v
+ python3 dfa_sim.py --help
+ python3 dfa_sim.py -v
 ```
 
 ## Contents:
