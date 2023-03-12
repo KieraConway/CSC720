@@ -1,0 +1,14 @@
+hello.c
+	This is the original source code file in C. It is a simple program written using the coding language C that prints the line “hello world” and newline character to the console.
+
+hello.i
+	This is the GCC preprocessor output file. The preprocessor begins transforming the original source file using Lexical Analysis. Some operations completed during this step includes: removing comments, substitutes macros for their equivalent values, and compiles all conditionals.
+
+hello.s
+	The assembly code for the source file. It contains the source file equivalent written in low-level assembly language.
+
+hello.o
+	This is the object file. It contains the machine code (binary representation) equivalent of the source code. When there are multiple source files, multiple object files are created. These are then linked together to create the executable.
+
+hello
+	This is compiled and linked executable which can be ran using “./hello”. When the program is run, it executes the code originally written in hello.c – it prints the line “hello world” and newline character to the console.
