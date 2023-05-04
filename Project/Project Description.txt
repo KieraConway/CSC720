@@ -1,0 +1,104 @@
+goal:
+	My goal was to create a functioning TM calculator that was able to compute both addition and subtraction for any input of two binary numbers in the form of {binary1}{operation}{binary1}=$
+	for example: 101-11=$
+
+
+ 
+challenges encountered:
+	my first draft was vastly overcomplicated with excessive branching for operation and possible scenario. To combat this I encorporated [?] which states that every subtraction problem can be converted to an equivalent addition problem. In binary, this process is as follows:
+		[insert steps here]
+		
+	This immensly helped as I was able to forgo over half of my machine and , instead, do some preprocessing and push all equations through the addition portion. 
+	
+	another challenge I faced were regarding negatives. I wanted my calculator to be able to calculate negative numbers. I was unable to find a solution until I realized the solution above that every subtraction problem can be converted to an equivalent addition problem. This was a huge breakthrough as the first steps for a positive subtraction and a negative subtraction are the same. As such, I was able to process the function the same, and handle the negative at the end. 
+	
+	To do this, I first compared if the left-hand side (LHS) was greater than the right-hand side (RHS) of the equation. If the LHS was greater, the difference would be positive, if the RHS was greater, the difference would be negative. I then used a place holder to identify the relational comparison.
+	
+	
+	Lastly, another challenge of mine was managing a TM this large. I have never created one with this many steps and found it easy to lose my place. Furthermore, with a TM this large, it can be difficult  and time-consuming to debug. To counter this, I broke it down into pieces and worked on each section individually before combining.
+
+
+how goal was achieved:
+
+	Once I broke my turing machine down into building blocks, I found it much more manageble and was able to achieve my goal. While each block contains additional nuances, Figure 1 shows a basic overview of the building blocks that I created for this TM. 
+	[insert figure 1]
+	
+	Definition of each section:
+		Padding: Pad each binary input so that its digits are a multiple of four
+			i.e - 11 becomes 0011, 10101 becomes 00010101, etc
+			
+		Length Equality: This section ensures that both binary inputs are the same length. This step is vital to ensure the correct placement for the future arithmetic.
+			i.e 0001+00111010=$ becomes 00000001+00111010=$
+			
+		Determine Operation: Determine if the input is subtraction or addition. If its addition, it continues onto the Binary Arithmetic section. If it is subtraction, it must undergoe some preprocessing first and enters the relational comparison section
+		
+		Relational Comparison (Subtraction Only): This section determines if the LHS or RHS is a greater value, to determine if the output will be positive or negative, and determine the specific post-processing techniques. If LHS > RHS, the difference will be positive and an 'S' placeholder is placed after the = sign, which becomes =S$
+		If LHS<RHS, the difference will be negative and an 'N' placeholder is placed after the = sign, which becomes =N$
+		Note: the S placeholder is used since we will be converting the problem to addition, it is important to know that it started off as subtraction.
+		
+		2s Complement Arithmetic  (Subtraction Only): This section calculates the 2s complement of the RHS value and changes the subtraction sign to addition. 
+			ie. 1001-0101=S$ becomes 1001+1011=S$
+			
+		Binary Arithmetic: This section handles the addition of of the functions passed to it. It all handles post-processing of the subtraction values. If the input was addition (i.e it does not contain an S or N placeholder) it is added normally. For the S placeholder, it removes the first digit. For the N place holder, it converts the sum to 2s complement, and inserts a negative sign. The head is then moved back to the '=' and the output is the calculated value.
+
+	Example of basic tm functionality:
+	
+		input: 11-10110=$
+		
+		padding: 0011-00010110=$
+		
+		Length Equality: 00000011-00010110=$
+		
+		Determine Operation: 00000011-00010110=$ 
+			[Subtraction, continue to preprocessing]
+		
+		Relational Comparison: 00000011<00010110=$
+			LHS<RHS = difference will be negative, use 'N' placeholder
+			00000011-00010110=N$
+		
+		2s Complement Arithmetic: 00000011-00010110=N$
+			00000011-00010110=N$	;original
+			00000011-11101001=N$	;switch values
+			00000011-11101010=N$	;add 1 
+			00000011+11101010=N$	;update sign to addition
+			
+		Binary Arithmetic: 00000011+11101010=N$
+			00000011+11101010=N$			;original
+			00000011+11101010=N11101101$	;solve	
+			
+			=N11101101$			;check for placeholder in sum, 'N' found
+			=N11101101$			;2s complement of sum
+				=N11101101$		;original	
+				=N00010010$		;switch values
+				=N00010011$		;add 1 		
+			=-00010011$			;replace 'N' with negative sign		
+				
+	The tape is moved to the '=' sign and the output is displayed. As shown in figure 2, this calculation is correct
+	[insert figure 2]
+
+			
+	
+the outcomes of the project:
+
+	As shown in figure 3, this calculator works as intended and produces the correct sum or difference. Figure 2 is broken down into six sections which contain different types of input to show the various functionality of the TM. Thise are as follows: 
+		1) Addition, both digits are multiples of four and do not require padding 
+		2) Addition, both digits are NOT multiples of four and require padding 
+		3) Subtraction, both digits are multiples of four and do not require padding, LHS>RHS so difference is positive
+		4) Subtraction, both digits are NOT multiples of four and require padding , LHS>RHS so difference is positive
+		5) Subtraction, both digits are multiples of four and do not require padding, LHS<RHS so difference is negative
+		6) Subtraction, both digits are NOT multiples of four and require padding ,  LHS<RHS so difference is negative
+
+	[insert figure 3]
+
+
+The expected input/output of your project:
+
+	As such, any two binary problems can be calculated for addition or subtraction using the input {binary1}{operation}{binary1}=$
+	for example: 101-11=$
+	
+	The calculator will use the steps outlined above and output the correct calculation.
+
+
+Technical Details (compilation, running, and environment):
+
+	This TM was created in JFLAP on a windows 11 machine. Since JFLAP is [?] the OS should not impact the accuracy of the machine.  Furthermore, as JFLAP is a GUI, there is no code to compile or run. Simply go to <https://www.jflap.org/jflaptmp/> and follow the instructions to install JFLAP. Once the program is installed, open the calcultor file and select TInput. To see how the TM works, step by step, select Step and insert an input string following the input criteria above. To test multiple strings at once and view the output, select 'Multiple Run' (Transducer)
