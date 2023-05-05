@@ -22,6 +22,9 @@ how goal was achieved:
 
 	Once I broke my turing machine down into building blocks, I found it much more manageble and was able to achieve my goal. While each block contains additional nuances, Figure 1 shows a basic overview of the building blocks that I created for this TM. 
 	[insert figure 1]
+
+		Padding, Length Equality, Determine Operation, Relational Comparison (Subtraction Only), 2s Complement Arithmetic  (Subtraction Only), Binary Arithmetic
+	
 	
 	Definition of each section:
 		Padding: Pad each binary input so that its digits are a multiple of four
